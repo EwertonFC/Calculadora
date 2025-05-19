@@ -1,9 +1,10 @@
 * {
-    box-sizing: border-box; /* Adicionado */
+    box-sizing: border-box;
+    /* Adicionado */
 }
 
-body{
-    background-color:rgb(215, 243, 113);
+body {
+    background-color: rgb(215, 243, 113);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -12,7 +13,7 @@ body{
     margin: 0;
 }
 
-.container{
+.container {
     background-color: grey;
     display: flex;
     flex-direction: column;
@@ -22,19 +23,19 @@ body{
     border-radius: 5px;
 }
 
-.tela{
+.tela {
     height: 150px;
     width: 100%;
-    border-bottom:  rgb(255, 255, 255) 5px solid;
+    border-bottom: rgb(255, 255, 255) 5px solid;
 }
 
-.fileira{
+.fileira {
     display: flex;
     justify-content: space-evenly;
     height: 70px;
     width: 100%;
     margin: 5px 0;
-    
+
 }
 
 button {
