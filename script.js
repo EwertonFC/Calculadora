@@ -1,65 +1,55 @@
-let botao = document.querySelectorAll(".botao")
-let tela = document.querySelector(".tela")
-let clear = document.querySelector(".ce")
-let operador = document.querySelectorAll(".operador")
+let botoes = document.querySelectorAll(".botao");
+let tela = document.querySelector(".tela");
+let limpar = document.querySelector(".ce");
+let operadores = document.querySelectorAll(".operador");
 
-// operacoes
 
-let soma = (a, b) => a + b;
-let subtracao = (a, b) => a - b;
-let multiplicacao = (a, b) => a * b;
-let divisao = (a, b) => {
-    if(b === 0){
-        return "Erro! divisao por 0"
-    }else {
-        return a/b
+function caracteres(event) {
+  if (tela.innerText.length >= 30) return;
+
+  const caractere = event.target.innerText;
+  const textoAtual = tela.innerText;
+  const ultimoCaractere = textoAtual[textoAtual.length - 1];
+
+  if (caractere === ",") {
+    if (
+      textoAtual === "" ||
+      ["+", "-", "*", "/", ","].includes(ultimoCaractere)
+    ) {
+      return;
     }
-};
 
-// popular e limpar display da calculadora
-
-function caracteres(event){
-
-    // para o texto do display nao fugir do escopo
-    if(tela.innerText.length > 29){
-        return
+    let ultimoNumero = textoAtual;
+    for (let i = textoAtual.length - 1; i >= 0; i--) {
+      if (["+", "-", "*", "/"].includes(textoAtual[i])) {
+        ultimoNumero = textoAtual.slice(i + 1);
+        break;
+      }
     }
-    const caractere = event.target.innerText;
-    tela.innerText += caractere;
+    if (ultimoNumero.includes(",")) return;
+  }
+
+  tela.innerText += caractere;
 }
 
-function operadores(event){
-    
-    const operador = event.target.innerText;
-    const textoAtual = tela.innerText;
+function operadoresFunc(event) {
+  const operador = event.target.innerText;
+  const textoAtual = tela.innerText;
+  if (textoAtual === "") return;
 
-    if (textoAtual === "") return; // não deixa adicionar operador se estiver vazio
+  const ultimoCaractere = textoAtual[textoAtual.length - 1];
 
-    const ultimoCaractere = textoAtual[textoAtual.length - 1];
+  // Aqui: também bloqueia operador logo após vírgula
+  if (["+", "-", "*", "/", ","].includes(ultimoCaractere)) return;
 
-    // Não deixa adicionar dois operadores seguidos
-    if (["+", "-", "*", "/"].includes(ultimoCaractere)) return;
-
-    // Verifica se já tem algum operador na expressão (só permite um por vez)
-    if (["+", "-", "*", "/"].some(op => textoAtual.includes(op))) return;
-    
-    tela.innerText += operador
-    
+  tela.innerText += operador;
 }
 
-function limparDisplay(event){
-    const valor = event.target.innerText;
-    tela.innerText = "";
+function limparDisplay() {
+  tela.innerText = "";
 }
 
-// eventos
-botao.forEach(element => {
-    element.addEventListener("click", caracteres)
-});
-
-operador.forEach(element => {
-    element.addEventListener("click", operadores)
-})
-
-clear.addEventListener("click", limparDisplay);
+botoes.forEach((btn) => btn.addEventListener("click", caracteres));
+operadores.forEach((op) => op.addEventListener("click", operadoresFunc));
+limpar.addEventListener("click", limparDisplay);
 
