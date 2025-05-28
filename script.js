@@ -19,12 +19,12 @@ function caracteres(event) {
       return;
     }
 
-    let ultimoNumero = textoAtual;
+    // Verifica se o número atual já tem vírgula
+    let ultimoNumero = "";
     for (let i = textoAtual.length - 1; i >= 0; i--) {
-      if (["+", "-", "*", "/"].includes(textoAtual[i])) {
-        ultimoNumero = textoAtual.slice(i + 1);
-        break;
-      }
+      const c = textoAtual[i];
+      if (["+", "-", "*", "/"].includes(c)) break;
+      ultimoNumero = c + ultimoNumero;
     }
     if (ultimoNumero.includes(",")) return;
   }
@@ -42,29 +42,37 @@ function operadoresFunc(event) {
   if (["+", "-", "*", "/", ","].includes(ultimoCaractere)) return;
 
   // Impede mais de um operador
-  if (["+", "-", "*", "/"].some(op => textoAtual.includes(op))) return;
+  for (let op of ["+", "-", "*", "/"]) {
+    if (textoAtual.includes(op)) return;
+  }
 
   tela.innerText += operador;
 }
 
 function calcular() {
-  let texto = tela.innerText.replace(",", ".");
-  let operador = null;
+  let texto = tela.innerText;
 
+  let operador = null;
   for (let op of ["+", "-", "*", "/"]) {
     if (texto.includes(op)) {
       operador = op;
       break;
     }
   }
-
   if (!operador) return;
 
-  const partes = texto.split(operador);
-  if (partes.length !== 2 || partes[1] === "") return;
+  let indexOp = texto.indexOf(operador);
+  let parte1 = texto.slice(0, indexOp);
+  let parte2 = texto.slice(indexOp + 1);
 
-  const a = parseFloat(partes[0]);
-  const b = parseFloat(partes[1]);
+  if (parte1 === "" || parte2 === "") return;
+
+  parte1 = parte1.replace(",", ".");
+  parte2 = parte2.replace(",", ".");
+
+  let a = parseFloat(parte1);
+  let b = parseFloat(parte2);
+
   if (isNaN(a) || isNaN(b)) return;
 
   let resultado;
@@ -73,17 +81,24 @@ function calcular() {
     case "+": resultado = a + b; break;
     case "-": resultado = a - b; break;
     case "*": resultado = a * b; break;
-    case "/": resultado = b === 0 ? "Erro" : a / b; break;
+    case "/":
+      if (b === 0) {
+        tela.innerText = "Erro";
+        return;
+      }
+      resultado = a / b;
+      break;
   }
 
-  if (typeof resultado === "number") {
-    const arredondado = parseFloat(resultado.toFixed(10));
-    tela.innerText = arredondado.toString().replace(".", ",");
-  }
-   else {
-    tela.innerText = resultado;
-  }
+  let textoResultado = resultado.toFixed(2);
+
+    textoResultado = textoResultado.replace(".", ",");
+
+  tela.innerText = textoResultado;
 }
+
+
+
 
 function limparDisplay() {
   tela.innerText = "";
